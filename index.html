@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f7f3">
   <title>杯记 · 咖啡萃取日志</title>
-  <link rel="stylesheet" href="/src/style.css">
+  <link rel="stylesheet" href="./src/style.css">
 </head>
 <body>
   <header class="app-header">
@@ -69,6 +69,6 @@
   </main>
   <dialog id="batch-dialog"><form id="batch-form"><h2>开始一包新豆子</h2><label>豆子名称<input name="name" required maxlength="200" placeholder="例如：埃塞俄比亚 · 花香批次"></label><div class="fields"><label>烘焙程度<select name="roast"><option>浅烘</option><option>中浅烘</option><option>中烘</option><option>深烘</option><option>未知</option></select></label><label>烘焙日期<input name="roastedAt" type="date"></label><label>产地<input name="origin" maxlength="200" placeholder="选填"></label><label>处理法<input name="process" maxlength="200" placeholder="选填"></label></div><div class="dialog-actions"><button type="button" id="close-batch" class="secondary">取消</button><button>创建批次</button></div></form></dialog>
   <div id="toast" role="status" aria-live="polite" hidden></div>
-  <script type="module" src="/src/app.js"></script>
+  <script type="module" src="./src/app.js"></script>
 </body>
 </html>

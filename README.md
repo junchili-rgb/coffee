@@ -34,3 +34,37 @@ npm test
 ## 文件
 
 `src/model.js`：历史数据、校验、对比与建议；`src/app.js`：页面和存储；`src/style.css`：响应式样式；`server.js`：仅提供应用静态文件。
+
+## GitHub Pages 静态部署适配
+
+本项目可以由 GitHub Pages 直接提供静态文件。`server.js` 只是本地开发时的文件服务器，没有业务 API、数据库、鉴权或服务端计算；所有记录、编辑、历史对比、建议和备份都由浏览器中的 JavaScript 完成。线上无需运行 Node.js，也无需安装依赖或构建。
+
+入口中的 CSS 和 JavaScript 使用 `./src/...` 相对路径，模块内部也使用相对导入，因此既适用于网站根路径，也适用于项目站点 `/coffee/`。各页面使用 `#brew`、`#history`、`#advice`，刷新无需服务器路由回退。根目录的 `.nojekyll` 用于直接发布静态文件。
+
+本次仅完成代码适配与测试，没有启用 Pages、执行部署、添加自动部署工作流或更改仓库公开权限。
+
+### 以后决定部署时
+
+1. 先确认账号套餐允许当前仓库使用 Pages，再合并对应 PR。
+2. 在仓库 Settings → Pages 中选择 **Deploy from a branch**，发布来源选 **main / (root)**，再保存。此步骤会实际触发发布，本次未执行。
+3. 使用 GitHub 返回的站点地址打开网页，确认地址以 `/coffee/` 结尾。部署目录只需要 `index.html`、`.nojekyll` 和 `src/` 下的三个文件；选择分支根目录发布时 GitHub 还可能提供该目录中的其他静态文件，但不会执行 `server.js`。
+
+### Private 仓库是否必须改为 Public
+
+根据 [GitHub Pages 官方说明](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)：GitHub Free 支持 Public 仓库；GitHub Pro 支持个人账号下的 Private 仓库，GitHub Team / Enterprise 等支持符合条件的组织仓库。本仓库属于个人账号，因此若使用 Free，需要选择将仓库改为 Public 或升级 Pro；若已有 Pro，则不必公开仓库。
+
+Private 仓库不等于私有网页：个人账号上的 Pages 网页仍会公开访问。内置的 7 条历史实验随静态文件发布；用户在浏览器中新增的记录仍只存于本地，不会上传到 GitHub。当前访问凭据无法确认账号套餐或读取 Pages 配置，请以账号 Billing 和仓库 Pages 设置为准。
+
+### 本地数据保持不变
+
+继续使用 `localStorage` 的 `coffee-journal-v1` 键、版本 1 的数据结构与原有 JSON 备份格式，不改变保存逻辑。浏览器存储按协议、域名和端口隔离：从本地开发网址转到 Pages 域名时，旧记录不会自动搬迁。请先在旧网页导出备份，再在新网页导入；同一浏览器同一域名下仅改变路径时存储仍共享。手机与电脑也不会自动同步。
+
+### 静态托管验证
+
+`npm test` 验证建议和数据逻辑。额外的浏览器测试需要 Python Playwright 与 Chromium；已有环境中运行：
+
+```sh
+COFFEE_BROWSER_EXECUTABLE=/usr/bin/chromium python tests/pages-browser.py
+```
+
+测试在临时目录中仅复制静态站点文件，使用通用静态服务器模拟根路径与 `/coffee/`，完全不启动 `server.js`。在 390px 手机与 1280px 桌面视口验证旧版数据读取、全部历史记录、新增、编辑、对比、建议、批次隔离、导入导出、删除、刷新与资源加载。使用隔离浏览器上下文，不影响用户浏览器数据。
