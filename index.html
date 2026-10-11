@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f3">
+  <title>杯记 · 咖啡萃取日志</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="#brew" aria-label="杯记，返回记录页"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 8h12v7a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8Z" stroke="currentColor" stroke-width="1.5"/><path d="M17 9h1a3 3 0 1 1 0 6h-1M8 3v2m4-3v3m4-2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>杯记</a>
+    <span class="device">Sage SES876 <span>· 冰美式</span></span>
+  </header>
+  <main>
+    <div class="page-heading"><p class="eyebrow">我的咖啡日志</p><h1 id="page-title">今天，这杯怎么样？</h1><p id="page-description">记下参数，让下一杯更接近酸甜花香。</p></div>
+    <nav class="tabs" role="tablist" aria-label="咖啡日志页面">
+      <button type="button" id="tab-brew" role="tab" aria-selected="true" aria-controls="view-brew" tabindex="0" data-view="brew">记录一杯</button>
+      <button type="button" id="tab-history" role="tab" aria-selected="false" aria-controls="view-history" tabindex="-1" data-view="history">历史记录</button>
+      <button type="button" id="tab-advice" role="tab" aria-selected="false" aria-controls="view-advice" tabindex="-1" data-view="advice">下一杯建议</button>
+    </nav>
+    <section class="toolbar" aria-label="豆批次选择"><div class="batch-picker"><label for="batch-select">豆批次</label><select id="batch-select"></select><p id="batch-info" class="muted"></p></div><button id="new-batch" class="text-button">＋ 新批次</button></section>
+
+    <section id="view-brew" role="tabpanel" aria-labelledby="tab-brew" tabindex="0">
+      <div class="panel entry">
+        <div class="section-heading"><h2 id="form-title">记录这一杯</h2><button id="copy-last" class="text-button">沿用上一杯</button></div>
+        <form id="brew-form">
+          <div class="subheading"><h3>萃取参数</h3><span id="ratio" class="ratio"></span></div>
+          <div class="fields brew-fields">
+            <label>粉量 <span>g</span><input name="dose" type="number" min="1" max="40" step="0.1" value="19" required></label>
+            <label>液重 <span>g</span><input name="yieldWeight" type="number" min="1" max="200" step="0.1" value="46" required></label>
+            <label>研磨刻度<input name="grind" type="number" min="1" max="40" step="1" value="19" required></label>
+            <label>萃取时间 <span>秒</span><input name="time" type="number" min="1" max="180" step="0.1" placeholder="启动起计时"></label>
+          </div>
+          <details id="recipe-details" class="form-disclosure">
+            <summary><span>水温与冰美式配比</span><span id="recipe-summary" class="summary-hint">默认水温 · 配比未填写</span></summary>
+            <div class="fields">
+              <label>水温档位<select name="temperature"><option>默认</option><option>升一档</option><option>升两档</option><option>降一档</option><option>降两档</option><option>默认（历史约93°C）</option></select></label>
+              <label>品尝时冰的状态<select name="iceState"><option>未记录</option><option>基本未融化</option><option>部分融化</option><option>基本融化</option></select></label>
+              <label>加水量 <span>g</span><input name="water" type="number" min="0" max="1000" step="1" placeholder="选填"></label>
+              <label>冰量 <span>g</span><input name="ice" type="number" min="0" max="1000" step="1" placeholder="选填"></label>
+            </div>
+            <p class="helper">保持水冰配比一致，更容易比较萃取后的口感变化。</p>
+          </details>
+          <fieldset class="taste-field"><legend>这一杯的口感 <span>可多选</span></legend><div id="taste-tags" class="tags"></div></fieldset>
+          <details id="observation-details" class="form-disclosure">
+            <summary><span>补充观察</span><span id="observation-summary" class="summary-hint">现象、评分与备注</span></summary>
+            <fieldset><legend>萃取现象</legend><div id="phenomena-tags" class="tags"></div></fieldset>
+            <div class="fields">
+              <label>整体满意度<select name="satisfaction"><option value="">未评价</option><option value="1">1 · 不满意</option><option value="2">2 · 待改善</option><option value="3">3 · 还不错</option><option value="4">4 · 很喜欢</option><option value="5">5 · 理想的一杯</option></select></label>
+              <label>比对照杯<select name="outcome"><option>未评价</option><option>变好</option><option>差不多</option><option>变差</option></select></label>
+            </div>
+            <label class="note-label">风味与观察<textarea name="notes" rows="3" maxlength="5000" placeholder="例如：柑橘酸柔和，回甘清晰；前段有喷溅"></textarea></label>
+            <label class="best-check"><input name="best" type="checkbox"> 标记为目前最佳候选</label>
+          </details>
+          <p id="comparison-note" class="helper" hidden></p>
+          <div class="form-actions"><button id="cancel-edit" type="button" class="secondary" hidden>取消</button><button type="submit" id="save-record">保存，查看建议 <span aria-hidden="true">→</span></button></div>
+        </form>
+      </div>
+    </section>
+    <section id="view-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden>
+      <div class="panel history"><div class="section-heading"><h2>这包豆子的记录</h2><span id="record-count" class="count"></span></div><div id="history-list"></div></div>
+    </section>
+    <section id="view-advice" role="tabpanel" aria-labelledby="tab-advice" tabindex="0" hidden>
+      <div class="panel advice"><div class="section-heading"><h2>下一杯，试着这样调</h2><span class="advice-dot" aria-hidden="true"></span></div><p id="advice-context" class="muted"></p><div id="advice-content"></div><div class="advice-actions"><button id="use-advised" class="secondary">沿用这杯，开始记录</button></div></div>
+      <p class="view-footnote">一次只改一个变量，让每杯的变化更清晰。</p>
+    </section>
+    <footer><span>仅保存在当前浏览器</span><details class="backup"><summary>数据备份</summary><div class="backup-content"><p>清除浏览器数据会丢失记录，请定期导出备份。</p><div><button id="export-data" class="text-button">导出 JSON</button><button id="import-data" class="text-button">导入备份</button><input id="import-file" type="file" accept=".json,application/json" hidden></div></div></details></footer>
+  </main>
+  <dialog id="batch-dialog"><form id="batch-form"><h2>开始一包新豆子</h2><label>豆子名称<input name="name" required maxlength="200" placeholder="例如：埃塞俄比亚 · 花香批次"></label><div class="fields"><label>烘焙程度<select name="roast"><option>浅烘</option><option>中浅烘</option><option>中烘</option><option>深烘</option><option>未知</option></select></label><label>烘焙日期<input name="roastedAt" type="date"></label><label>产地<input name="origin" maxlength="200" placeholder="选填"></label><label>处理法<input name="process" maxlength="200" placeholder="选填"></label></div><div class="dialog-actions"><button type="button" id="close-batch" class="secondary">取消</button><button>创建批次</button></div></form></dialog>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
